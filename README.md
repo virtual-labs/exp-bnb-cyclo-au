@@ -8,7 +8,7 @@
 
 ### About the Experiment 
 
-RNA molecules fold into specific shapes that help them function in the cell. In this experiment, we use the Nussinov algorithm to predict the secondary structure of an RNA sequence. The algorithm finds the best way the bases can pair to form a stable structure, helping us understand how RNA folds.
+The Branch-and-Bound Algorithm for Cyclopeptide Sequencing is a computational approach used to determine the amino acid sequence of cyclic peptides from mass spectrometry data. This algorithm systematically explores possible peptide sequences while eliminating unlikely candidates based on mass constraints, significantly reducing computational complexity. By efficiently pruning the search space, it ensures accurate and rapid identification of cyclic peptides, which are important in drug discovery and biological research.
 
 <b>Name of Developer | <b> Dr. Shyam Diwakar 
 :--|:--|
