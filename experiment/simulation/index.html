@@ -2,31 +2,50 @@
 <html lang="en">
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.21.0/cytoscape.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.0/canvg.min.js"></script>
     <!-- Include html2canvas Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cyclopeptide Sequencing</title>
+
+    <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- qTip2 CSS + JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/qtip2@3.0.3/dist/jquery.qtip.min.css">
+<script src="https://cdn.jsdelivr.net/npm/qtip2@3.0.3/dist/jquery.qtip.min.js"></script>
+
+<!-- cytoscape and cytoscape-qtip -->
+<script src="https://unpkg.com/cytoscape@3.24.0/dist/cytoscape.min.js"></script>
+<script src="https://unpkg.com/cytoscape-qtip@2.7.0/cytoscape-qtip.js"></script>
+
 </head>
 
 <body>
     <body>
         <div class="container">
+            <img src="https://webfiles.amrita.edu/2024/07/logo-branding-amrita-universiy-2024.png" alt="Amrita University Logo" class="logo">
             <!-- 🔹 Page Header -->
-            <h1>  Branch And Bound Cyclopeptide Sequencing Tool</h1>
+            <h1> Branch And Bound Cyclopeptide Sequencing Tool</h1>
     
             <!-- ℹ️ Instructions Section -->
-            <div id="instructionsContainer">
-                <h2>📌 How to Use This Tool?</h2>
-                <div class="instruction-step">1️⃣ Enter a spectrum (comma-separated numbers).</div>
-                <div class="instruction-step">2️⃣ Upload a file or use sample spectrum data.</div>
-                <div class="instruction-step">3️⃣ Click <strong>Start Simulation</strong> to generate peptide sequences.</div>
-                <div class="instruction-step">4️⃣ View results and visualize the peptide sequence.</div>
-            </div>
+<div id="instructionsContainer">
+    <h2>🧪 How to Use This Tool?</h2>
+    <div class="instructions-wrapper">
+        <div class="instruction-step"><span>1️⃣</span> <strong>Enter Spectrum Data:</strong> Input a comma-separated list or upload a file.</div>
+        <div class="instruction-step"><span>2️⃣</span> <strong>Start Processing:</strong> Click <strong>Start Simulation</strong> to generate K-mers.</div>
+        <div class="instruction-step"><span>3️⃣</span> <strong>View Results:</strong> The k-mers will be displayed with the peptide sequences.</div>
+        <div class="instruction-step"><span>4️⃣</span> <strong>Visualization:</strong> Click <strong>Show peptide sequence</strong> to see the structure..</div>
+        <div class="instruction-step"><span>5️⃣</span> <strong>Download Structure:</strong> Click <strong>Download</strong> to save as PNG/JPG.</div>
+    </div>
+</div>
+
+
     
     <!-- 🧬 Amino Acid Masses Container -->
     <div class="amino-mass-container">
-        <h2>Amino Acid Masses</h2>
+        <h2><strong>Amino Acid Masses</strong></h2>
         <div id="aminoMassDisplay" class="amino-mass-box"></div>
     </div>
     
@@ -59,19 +78,22 @@
     
             <h2>Visualization Peptide Sequence:</h2>
             <button id="showPeptideButton" style="display: none;">Show Peptide Sequence</button>
+            <!-- CHANGING  CY -->
+            <div class="download-button-container">
+                <button id="downloadButton" style="display:none;">📥 Download ▼</button>
+                <div class="dropdown-content" id="dropdownMenu">
+                    <a href="#" id="downloadJPG">Download as JPG</a>
+                    <a href="#" id="downloadPNG">Download as PNG</a>
+                </div>
+            </div>
             <div id="cy"></div>
         </div>
-         
-        <!-- 📥 Download Button with Dropdown -->
+    
+       <!-- 📥 Download Button with Dropdown -->
     
         <!-- 📥 Download Button with Dropdown -->
-<div class="download-button-container">
-    <button id="downloadButton">📥 Download ▼</button>
-    <div class="dropdown-content" id="dropdownMenu">
-        <a href="#" id="downloadJPG">Download as JPG</a>
-        <a href="#" id="downloadPNG">Download as PNG</a>
-    </div>
-</div>
+
+          
     
 </body>
     <style>
@@ -91,47 +113,131 @@ body {
     background: #ffffff;
     border-radius: 15px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position:relative;/*Needed for absolute positioning*/
+    padding-top:70x;/*Ensures space for logo*/
     animation: fadeIn 1s ease-in-out;
+}
+.logo {
+    position: absolute;
+    top: 15px; /* Moves it slightly lower */
+    left: 15px;
+    height: 50px;
+    width: auto;
+    z-index:10;                                                    /*Change*/
 }
 
 /* 🔹 Header Styling */
 h1 {
     font-size: 28px;
-    color: #007bff;
+    color: #333;
     text-transform: uppercase;
     letter-spacing: 2px;
-    animation: slideDown 2s ease-in-out;
+    animation: slideDown 1.5s ease-in-out;               
+    text-align: center;
+    margin: 0 auto;
+    font-weight:700;                                /*Change*/
+}
+h2 {
+    font-family: 'Times New Roman', Times, serif;
+    
 }
 
+label {
+    display: block; /* Makes the label appear on its own line */
+    font-weight: bold;
+    font-size: 23px;
+    color: #333;
+    margin-bottom: 1px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+
+                                                             /*CHANGE*/
+/* 📱 Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .container{
+        padding-top:110px;
+    }
+
+    .logo {
+        height: 40px; /* Slightly smaller logo for mobile */
+        top: 10px; /* Adjusted top padding */
+        left: 10px;
+    }
+
+    h1{
+        font-size:26px;
+        text-align:center;
+        margin-top:60px;
+    }
+}
+
+/* 📱 Landscape Mode Fix */
+@media (max-width: 1024px) and (orientation: landscape) {
+    .container {
+        padding-top: 80px; /* Increases top padding when in landscape */
+    }
+
+    .logo {
+        height: 35px; /* Reduce logo size in landscape */
+        top: 5px;
+        left: 15px;
+    }
+}
 /* 📌 Instructions Section */
 #instructionsContainer {
-    max-width: 80%;
-    margin: 15px auto;
-    padding: 15px;
-    background: #eaf2ff;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.8s ease-in-out;
-    transition: all 0.3s ease-in-out;
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 25px;
+    background: #ffffff; /* Clean, professional white background */
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    animation: fadeIn 0.6s ease-in-out;
+    border-left: 5px solid #007bff; /* Adds a subtle left border for aesthetics */
 }
 
-/* Instruction Steps */
+/* 📌 Section Heading */
+#instructionsContainer h2 {
+    font-size: 22px;
+    color: #222;
+    margin-bottom: 15px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+/* 📌 Instructions Wrapper */
+.instructions-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 📌 Instruction Steps */
 .instruction-step {
-    background: white;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    font-size: 15px;
-    line-height: 1.4;
-    transition: transform 0.3s ease-in-out;
-    animation: fadeInUp 0.8s ease-in-out;
+    font-size: 16px;
+    color: #333;
+    padding: 10px 15px;
+    background: #f8f9fa; /* Soft background for each step */
+    border-radius: 5px;
+    border-left: 4px solid #0056b3; /* Adds a colored left border for each step */
+    font-weight: 500;
+    transition: background 0.3s ease-in-out;
 }
 
-.instruction-step:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+/* 📌 Step Number Styling */
+.instruction-step span {
+    font-size: 18px;
+    font-weight: 600;
+    color: #007bff;
 }
+
+/* 🎯 Hover Effect (Subtle for Professional Feel) */
+.instruction-step:hover {
+    background: #e9ecef;
+}
+
 
 /* 📌 Amino Acid Masses Container */
 .amino-mass-container {
@@ -172,23 +278,25 @@ h1 {
     transition: 0.3s;
 }
 
-/* 🎬 Fade-In Animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* ✨ Sparkling Button Effect */
+@keyframes sparkle {
+    0% { box-shadow: 0 0 5px #007bff, 0 0 10px #007bff; }
+    25% { box-shadow: 0 0 10px #0056b3, 0 0 15px #0056b3; }
+    50% { box-shadow: 0 0 15px #007bff, 0 0 20px #007bff; }
+    75% { box-shadow: 0 0 10px #0056b3, 0 0 15px #0056b3; }
+    100% { box-shadow: 0 0 5px #007bff, 0 0 10px #007bff; }
 }
 
 /* 🔹 Input Box */
 .input-container textarea {
     width: 100%;
     max-width: 100%;
-    height: 100px;
+    height: 120px;
     padding: 15px;
     border: 2px solid #ddd;
     border-radius: 10px;
     font-size: 16px;
     transition: all 0.3s ease;
-    text-align: left;
 }
 
 .input-container textarea:focus {
@@ -233,7 +341,7 @@ h1 {
 
 /* 📌 Amino Acid Masses Container */
 .amino-mass-container {
-    max-width: 600px;
+    max-width: 1100px;
     margin: 15px auto;
     padding: 15px;
     background: #f8f9fa;  /* Soft Gray Background */
@@ -256,18 +364,40 @@ h1 {
 /* 📌 Individual Amino Acid Boxes */
 .amino-acid {
     padding: 8px 12px;
-    background: #007bff;
-    color: white;
+    color: rgb(9, 5, 5);
     border-radius: 5px;
     font-weight: bold;
     transition: transform 0.3s ease-in-out, background 0.3s;
 }
 
-/* ⚡ Hover Effect */
+/* 🌸 Soft Pastel Colors for Each Box */
+.amino-acid:nth-child(1) { background: #ffadad; } /* Soft Red */
+.amino-acid:nth-child(2) { background: #ffd6a5; } /* Soft Orange */
+.amino-acid:nth-child(3) { background: #fdffb6; color: black; } /* Soft Yellow */
+.amino-acid:nth-child(4) { background: #caffbf; color: black; } /* Soft Green */
+.amino-acid:nth-child(5) { background: #9bf6ff; } /* Soft Cyan */
+.amino-acid:nth-child(6) { background: #a0c4ff; } /* Soft Blue */
+.amino-acid:nth-child(7) { background: #bdb2ff; } /* Soft Purple */
+.amino-acid:nth-child(8) { background: #ffc6ff; } /* Soft Pink */
+.amino-acid:nth-child(9) { background: #f7b2b7; } /* Soft Rose */
+.amino-acid:nth-child(10) { background: #d9d7f1; color: black; } /* Soft Lavender */
+.amino-acid:nth-child(11) { background: #ffdab9; color: black; } /* Peach */
+.amino-acid:nth-child(12) { background: #b8f2e6; color: black; } /* Mint Green */
+.amino-acid:nth-child(13) { background: #f2a2e8; } /* Light Magenta */
+.amino-acid:nth-child(14) { background: #a7bed3; color: black; } /* Dusty Blue */
+.amino-acid:nth-child(15) { background: #d4a5a5; } /* Soft Brown */
+.amino-acid:nth-child(16) { background: #ffafcc; } /* Pastel Pink */
+.amino-acid:nth-child(17) { background: #f0efeb; color: black; } /* Soft Grey */
+.amino-acid:nth-child(18) { background: #ffcb77; color: black; } /* Light Orange */
+.amino-acid:nth-child(19) { background: #90e0ef; } /* Pastel Sky Blue */
+.amino-acid:nth-child(20) { background: #b5e48c; color: black; } /* Pastel Lime Green */
+
+/* 🌟 Hover Effect (Slight Glow) */
 .amino-acid:hover {
-    background: #0056b3;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     transform: scale(1.05);
 }
+
 
 /* 🎬 Fade-In Animation */
 @keyframes fadeIn {
@@ -277,6 +407,9 @@ h1 {
 
 
 
+
+
+/* 🎇 Apply the sparkle effect to all buttons */
 button {
     padding: 12px 25px;
     font-size: 16px;
@@ -287,15 +420,18 @@ button {
     border-radius: 25px;
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: sparkle 1.5s infinite alternate; /* ✨ Apply Sparkle Animation */
 }
 
+/* Hover Effect */
 button:hover {
     transform: scale(1.05);
     background: #0056b3;
 }
 
-/* 📊 Results Box */
+
+
+/* 📊 Results Box                                                                                                                CHANGE */                                                                                                                               
 #resultBox {
     background: #f9f9f9;
     padding: 15px;
@@ -313,7 +449,7 @@ button:hover {
     width: 100%;
     height: 500px;
     border: 2px solid #ddd;
-    background: rgba(228, 233, 235, 0.9);
+    background: rgb(255, 255, 255);
     border-radius: 10px;
 }
 
@@ -336,7 +472,7 @@ button:hover {
     display: inline-block;
 }
 
-#downloadButton {
+#downloadButton {                                                                                                                                 
     padding: 10px 20px;
     font-size: 16px;
     font-weight: bold;
@@ -378,6 +514,8 @@ button:hover {
 .dropdown-content a:hover {
     background: #f1f1f1;
 }
+
+
     </style>
 
 
@@ -392,8 +530,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // ▶️ Start Simulation Button - Generates Peptide Predictions
     document.getElementById("startButton").addEventListener("click", generatePredictions);
 
-    // 🔍 Show Peptide Sequence Button (Only Appears After Simulation)
+    // 🔍 Show Peptide Sequence Button (Only Appears After Simulation)                                                
     document.getElementById("showPeptideButton").addEventListener("click", visualizePeptide);
+
 
     // 📂 File Input Handler (For Uploading Custom Spectrum Data)
     document.getElementById("fileInput").addEventListener("change", handleFileUpload);
@@ -416,14 +555,16 @@ document.addEventListener("DOMContentLoaded", function () {
 function resetFields() {
     document.getElementById("spectrumInput").value = "";
     document.getElementById("resultBox").innerText = "";
+    document.getElementById("fileInput").value = "";
+
     document.getElementById("showPeptideButton").style.display = "none";
+    document.getElementById("downloadButton").style.display = "none";
+
     document.getElementById("cy").innerHTML = "";
 }
 
         const aminoMasses = {
-            'A': 71, 'R': 156, 'N': 114, 'D': 115, 'C': 103, 'E': 129, 'Q': 128, 'K': 128,
-            'G': 57, 'H': 137, 'I': 113, 'L': 113, 'M': 131, 'F': 147, 'P': 97, 'S': 87,
-            'T': 101, 'W': 186, 'Y': 163, 'V': 99
+            'G':57,'A':71,'S':87,'P':97,'V':99,'T':101,'C':103,'I':113,'L':113,'N':114,'D':115,'Q':128,'K':128,'E':129,'M':131,'H':137,'F':147,'R':156,'Y':163,'W':186
         };
 
         let finalPeptide = "";
@@ -455,11 +596,10 @@ function resetFields() {
     document.getElementById('resultBox').innerText = sequences;
 
 
-    document.getElementById('showPeptideButton').style.display = "inline-block";
+    document.getElementById('showPeptideButton').style.display = "inline-block"; 
+
 }
-
-
-
+ // ✅ Function to generate peptide sequencec structure
         function predictPeptide(spectrum) {
             let foundAminoAcids = [];
             for (let aa in aminoMasses) {
@@ -497,28 +637,227 @@ function resetFields() {
         }
 
         function visualizePeptide() {
-            let peptide = finalPeptide.split("");
-            let elements = peptide.map(aa => ({ data: { id: aa, label: aa } }));
+    let peptide = finalPeptide.split("");
+    let elements = peptide.map((aa, index) => ({
+        data: { id: `${aa}${index}`, label: aa }
+    }));
 
-            for (let i = 0; i < peptide.length - 1; i++) {
-                elements.push({
-                    data: { source: peptide[i], target: peptide[i + 1] }
-                });
+    // Generate edges
+    for (let i = 0; i < peptide.length - 1; i++) {
+        elements.push({
+            data: { source: `${peptide[i]}${i}`, target: `${peptide[i + 1]}${i + 1}` }
+        });
+    }
+
+    if (isCyclic) {
+        elements.push({
+            data: { source: `${peptide[peptide.length - 1]}${peptide.length - 1}`, target: `${peptide[0]}0` }
+        });
+    }
+
+    // Random color generator for nodes
+    function getRandomColor() {
+        const colors = ["#007bff", "#ff5733", "#33ff57", "#f39c12", "#8e44ad", "#e74c3c", "#27ae60"];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    let cy = cytoscape({
+        container: document.getElementById('cy'),
+        elements: elements,
+        style: [
+            {
+                selector: 'node',
+                style: {
+                    'label': 'data(label)',
+                    'background-color': (ele) => getRandomColor(),
+                    'text-valign': 'center',
+                    'text-halign': 'center',
+                    'color': 'white',
+                    'font-weight': 'bold',
+                    'border-width': 2,
+                    'border-color': '#fff',
+                    'width': 30,
+                    'height': 30
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'width': 2,
+                    'line-color': '#ccc',
+                    'target-arrow-color': '#ccc',
+                    'target-arrow-shape': 'triangle'
+                }
             }
+        ],
+        layout: { name: isCyclic ? 'circle' : 'grid' }
+    });
 
-            if (isCyclic) {
-                elements.push({
-                    data: { source: peptide[peptide.length - 1], target: peptide[0] }
-                });
-            }
+    cy.nodes().forEach(function (node) {
+    let aa = node.data('label');
 
-            let cy = cytoscape({
-                container: document.getElementById('cy'),
-                elements: elements,
-                style: [{ selector: 'node', style: { 'label': 'data(label)', 'background-color': '#007bff' } }],
-                layout: { name: isCyclic ? 'circle' : 'grid' }
-            });
+    // Amino acid info map
+    let aminoAcidInfo = {
+        'A': {
+            name: 'Alanine (A)',
+            mass: '71 Da',
+            desc: 'Hydrophobic<br>Common in small peptides<br>Often found in internal cyclic regions.',
+            
+        },
+        'R': {
+            name: 'Arginine (R)',
+            mass: '156 Da',
+            desc: 'Basic, hydrophilic<br>High m/z in MS due to guanidinium group<br>Increases peptide charge states.',
+        
+        },
+        'N': {
+            name: 'Asparagine (N)',
+            mass: '114 Da',
+            desc: 'Polar<br>Glycosylation site<br>Fragmentation marker.',
+            
+        },
+        'D': {
+            name: 'Aspartic Acid (D)',
+            mass: '115 Da',
+            desc: 'Negatively charged<br>Causes backbone cleavage in MS.',
+            
+        },
+        'C': {
+            name: 'Cysteine (C)',
+            mass: '103 Da',
+            desc: 'Forms disulfide bonds<br>Mass increases if modified (e.g., alkylation).',
+            
+        },
+        'E': {
+            name: 'Glutamic Acid (E)',
+            mass: '129 Da',
+            desc: 'Negatively charged<br>b-ion fragment marker.',
+            
+        },
+        'Q': {
+            name: 'Glutamine (Q)',
+            mass: '128 Da',
+            desc: 'Polar<br>Can deamidate<br>MS fragmentation marker.',
+            
+        },
+        'G': {
+            name: 'Glycine (G)',
+            mass: '57 Da',
+            desc: 'Smallest amino acid<br>Increases backbone flexibility.',
+            
+        },
+        'H': {
+            name: 'Histidine (H)',
+            mass: '137 Da',
+            desc: 'Basic, aromatic<br>Imidazole ring helps MS ionization.',
+            
+        },
+        'I': {
+            name: 'Isoleucine (I)',
+            mass: '113 Da',
+            desc: 'Hydrophobic<br>Same MS mass as Leucine.',
+        
+        },
+        'L': {
+            name: 'Leucine (L)',
+            mass: '113 Da',
+            desc: 'Hydrophobic<br>Structural stability in peptides.',
+            
+        },
+        'K': {
+            name: 'Lysine (K)',
+            mass: '128 Da',
+            desc: 'Basic<br>Increases ionization in MS.',
+            
+        },
+        'M': {
+            name: 'Methionine (M)',
+            mass: '131 Da',
+            desc: 'Sulfur-containing<br>Oxidizable, changes mass.',
+            
+        },
+        'F': {
+            name: 'Phenylalanine (F)',
+            mass: '147 Da',
+            desc: 'Aromatic<br>Strong UV/MS signature.',
+            
+        },
+        'P': {
+            name: 'Proline (P)',
+            mass: '97 Da',
+            desc: 'Rigid cyclic structure<br>Fragment ladder terminator.',
+            
+        },
+        'S': {
+            name: 'Serine (S)',
+            mass: '87 Da',
+            desc: 'Polar<br>Phosphorylation site<br>H2O neutral loss.',
+            
+        },
+        'T': {
+            name: 'Threonine (T)',
+            mass: '101 Da',
+            desc: 'Polar<br>Neutral loss<br>Phosphorylatable.',
+            
+        },
+        'W': {
+            name: 'Tryptophan (W)',
+            mass: '186 Da',
+            desc: 'Highest mass<br>Aromatic<br>Strong UV/MS signal.',
+            
+        },
+        'Y': {
+            name: 'Tyrosine (Y)',
+            mass: '163 Da',
+            desc: 'Aromatic<br>Used in UV/MS quantification.',
+            
+        },
+        'V': {
+            name: 'Valine (V)',
+            mass: '99 Da',
+            desc: 'Hydrophobic<br>Stable in MS fragmentation.',
+            
         }
+    };
+
+    let aaData = aminoAcidInfo[aa];
+
+    let content = aaData
+        ? `<strong>${aaData.name}</strong><br>
+           Mass: ${aaData.mass}<br>
+           ${aaData.desc}<br>
+           <img src="${aaData.img}" alt="${aaData.name}" width="100">`
+        : "Unknown Amino Acid";
+
+    node.qtip({
+        content: { text: content },
+        position: {
+            my: 'top center',
+            at: 'bottom center'
+        },
+        style: {
+            classes: 'qtip-light qtip-shadow qtip-rounded',
+            tip: { width: 10, height: 5 }
+        }
+    });
+});
+
+
+
+    document.getElementById('downloadButton').style.display = "inline-block";                                                     
+
+    // Display additional sequence info
+    let totalMass = peptide.reduce((sum, aa) => sum + aminoMasses[aa], 0);
+    document.getElementById('peptideInfo').innerHTML = `
+        <strong>Sequence:</strong> ${finalPeptide}<br>
+        <strong>Length:</strong> ${peptide.length}<br>
+        <strong>Total Mass:</strong> ${totalMass} Da<br>
+        <strong>Structure:</strong> ${isCyclic ? 'Cyclic' : 'Linear'}
+    `;
+            
+}
+
+
 
         // ✅ Function to Download Cyclic Data
 function downloadSampleCyclic() {
@@ -541,7 +880,7 @@ function downloadSampleNonCyclic() {
 }
 
 
-        function handleFileUpload(event) {
+        function handleFileUpload(event) {                                                                                         //CHANGE
             let file = event.target.files[0];
             if (!file) return;
 
@@ -564,11 +903,11 @@ function loadAminoAcidMasses() {
 }
 
 // ✅ Call the function when the page loads
-window.onload = loadAminoAcidMasses;
-
+window.onload = loadAminoAcidMasses;      
+                                                                                                     
 document.addEventListener("DOMContentLoaded", function () {
-    // Toggle dropdown menu
-    document.getElementById("downloadButton").addEventListener("click", function (event) {
+   // Toggle dropdown menu
+   document.getElementById("downloadButton").addEventListener("click", function (event) {
         event.stopPropagation();
         let dropdown = document.getElementById("dropdownMenu");
         dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
@@ -594,6 +933,9 @@ document.addEventListener("DOMContentLoaded", function () {
         captureImage('png');
     });
 });
+
+
+
 
 function captureImage(format) {
     let cyElement = document.getElementById("cy");
