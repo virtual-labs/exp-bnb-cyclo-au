@@ -1,0 +1,73 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "1. The first step to start the simulation is",
+      "answers": {
+        "a": "Upload mass spectrum data",
+        "b": "Upload amino acid residue sequence",
+        "c": "Enter a comma-separated spectrum number",
+        "d": "Upload list of protein sequence"
+      },
+      
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    
+
+    {
+      "question": "2. The experimental spectrum can be",
+      "answers": {
+        "a": "Cyclic data",
+        "b": "Non-cyclic data",
+        "c": "Both cyclic and non-cyclic data",
+        "d": "None of the above"
+      },
+      
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+
+
+    {
+      "question": "3. If you have a cyclic peptide, ADCGF, the 2-mer can be",
+      "answers": {
+        "a": "A, D, C, G, F",
+        "b": "AD, DC, CG, GF, FA",
+        "c": "ADC, DCG, CGF, GFA, FAD",
+        "d": "ADCG, DCGF, CGFA, GFAD, FADC"
+      },
+      
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+
+
+    {
+      "question": "4. If you have a linear peptide DILY, the 1-mer can be",
+      "answers": {
+        "a": "D, I, L, Y",
+        "b": "DI, IL, LY, YD",
+        "c": "DIL, ILY, LYD, YDI",
+        "d": "DILY, ILYD, LYDI, YDIL"
+      },
+      
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+
+    
+    {
+      "question": "5. Identify the sequence of steps in branch-and-bound cyclopeptide sequencing.",
+      "answers": {
+        "a": "Initialization, Bounding, Branching, Selection",
+        "b": "Initialization, Branching, Bounding, Selection",
+        "c": "Initialization, Bounding, Selection, Branching",
+        "d": "Initialization, Selection, Branching, Bounding"
+      },
+      
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    }
+  ]
+}
